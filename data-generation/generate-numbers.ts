@@ -7,8 +7,7 @@ const datasetSizes = [
   1000000
 ]
 for (const dataset of datasetSizes) {
-  const fileName = `dataset-${dataset}.txt`;
-  let result = '[';
+  const fileName = `dataset-${dataset}.json`;
   const nums = [...new Array(dataset)].map(() => {
     let randomNumber = Math.floor(Math.random() * 100);
     if (Math.random() >= 0.8) {
@@ -18,9 +17,9 @@ for (const dataset of datasetSizes) {
     return randomNumber;
   });
 
-  result += nums.join(', ');
-  result += ']\n[';
-  result += nums.sort((a, b) => a - b).join(', ');
-  result += ']';
-  Deno.writeTextFileSync(fileName, result);
+  const toWrite = {
+    data: nums,
+    expected: nums.sort((a, b) => a - b)
+  }
+  Deno.writeTextFileSync(fileName, JSON.stringify(toWrite));
 }
