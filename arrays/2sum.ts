@@ -1,5 +1,5 @@
 function twoSum(nums: number[], target: number): number[] {
-  const differences = {};
+  const differences: Record<number, number> = {};
   for (let i = 0; i < nums.length; i++) {
     if (typeof differences[nums[i]] !== 'undefined') {
       return [differences[nums[i]], i];
