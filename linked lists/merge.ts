@@ -8,32 +8,24 @@ class ListNode {
 }
 
 function mergeTwoLists(list1: ListNode | null, list2: ListNode | null): ListNode | null {
-  let l = list1;
-  let r = list2;
+  let l1 = list1;
+  let l2 = list2;
   const mergedHead: ListNode = {
     next: null,
     val: -1
   };
   let mergedNext = mergedHead;
-  while (true) {
-    if (l === null) {
-      mergedNext.next = r;
-      break;
-    }
-    if (r === null) {
-      mergedNext.next = l;
-      break;
-    }
-    if (l.val < r.val) {
-      mergedNext.next = l;
-      mergedNext = mergedNext.next;
-      l = l.next;
+  while (l1 && l2) {
+    if (l1.val < l2.val) {
+      mergedNext.next = l1;
+      l1 = l1.next;
     } else {
-      mergedNext.next = r;
-      mergedNext = mergedNext.next;
-      r = r.next;
+      mergedNext.next = l2;
+      l2 = l2.next;
     }
+    mergedNext = mergedNext.next;
   }
+  mergedNext.next = l1 || l2;
   return mergedHead.next;
 }
 
