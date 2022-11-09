@@ -5,7 +5,11 @@ function getBiggestThree(grid: number[][]): number[] {
   for (let rhombusSize = 1; rhombusSize <= maxRhombus; rhombusSize += 2) {
     for (let row = 0; row <= grid.length - rhombusSize; row++) {
       const endRow = row + rhombusSize - 1;
-      for (let col = Math.floor(rhombusSize / 2); col < grid[0].length; col++) {
+      for (
+        let col = Math.floor(rhombusSize / 2);
+        col < grid[0].length - Math.floor(rhombusSize / 2);
+        col++
+      ) {
         let sum = 0;
         for (let i = row; i <= row + Math.floor(rhombusSize / 2); i++) {
           for (
@@ -19,8 +23,8 @@ function getBiggestThree(grid: number[][]): number[] {
         for (let i = endRow; i > row + Math.floor(rhombusSize / 2); i--) {
           for (
             let j = col - (endRow - i);
-            j <= col - (i - row) + (i - row) * 2;
-            j += Math.max(1, (i - row) * 2)
+            j <= col - (endRow - i) + (endRow - i) * 2;
+            j += Math.max(1, (endRow - i) * 2)
           ) {
             sum += grid[i][j];
           }
