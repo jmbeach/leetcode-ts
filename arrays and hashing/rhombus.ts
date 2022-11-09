@@ -5,26 +5,31 @@ function getBiggestThree(grid: number[][]): number[] {
   for (let rhombusSize = 1; rhombusSize <= maxRhombus; rhombusSize += 2) {
     for (let row = 0; row <= grid.length - rhombusSize; row++) {
       const endRow = row + rhombusSize - 1;
-      for (
-        let col = Math.floor(rhombusSize / 2);
-        col < grid[0].length - Math.floor(rhombusSize / 2);
-        col++
-      ) {
+      const halfSize = Math.floor(rhombusSize / 2);
+      for (let col = halfSize; col < grid[0].length - halfSize; col++) {
         let sum = 0;
-        for (let i = row; i <= row + Math.floor(rhombusSize / 2); i++) {
+
+        // top half of rhombus
+        for (let i = row; i <= row + halfSize; i++) {
+          const iBase = i - row;
+          const startCol = col - iBase;
           for (
-            let j = col - (i - row);
-            j <= col - (i - row) + (i - row) * 2;
-            j += Math.max(1, (i - row) * 2)
+            let j = startCol;
+            j <= startCol + iBase * 2;
+            j += Math.max(1, iBase * 2)
           ) {
             sum += grid[i][j];
           }
         }
-        for (let i = endRow; i > row + Math.floor(rhombusSize / 2); i--) {
+
+        // bottom half of rhombus
+        for (let i = endRow; i > row + halfSize; i--) {
+          const iBase = endRow - i;
+          const startCol = col - iBase;
           for (
-            let j = col - (endRow - i);
-            j <= col - (endRow - i) + (endRow - i) * 2;
-            j += Math.max(1, (endRow - i) * 2)
+            let j = startCol;
+            j <= startCol + iBase * 2;
+            j += Math.max(1, iBase * 2)
           ) {
             sum += grid[i][j];
           }
