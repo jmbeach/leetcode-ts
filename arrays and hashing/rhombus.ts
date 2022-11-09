@@ -1,40 +1,49 @@
+function getRhombusSum(
+  grid: number[][],
+  rhombusSize: number,
+  row: number,
+  col: number
+): number {
+  let sum = 0;
+  const halfSize = Math.floor(rhombusSize / 2);
+  // top half of rhombus
+  for (let i = row; i <= row + halfSize; i++) {
+    const iBase = i - row;
+    const startCol = col - iBase;
+    for (
+      let j = startCol;
+      j <= startCol + iBase * 2;
+      j += Math.max(1, iBase * 2)
+    ) {
+      sum += grid[i][j];
+    }
+  }
+
+  // bottom half of rhombus
+  const endRow = row + rhombusSize - 1;
+  for (let i = endRow; i > row + halfSize; i--) {
+    const iBase = endRow - i;
+    const startCol = col - iBase;
+    for (
+      let j = startCol;
+      j <= startCol + iBase * 2;
+      j += Math.max(1, iBase * 2)
+    ) {
+      sum += grid[i][j];
+    }
+  }
+
+  return sum;
+}
 function getBiggestThree(grid: number[][]): number[] {
   let maxRhombus = Math.min(grid.length, grid[0].length);
   if (maxRhombus % 2 === 0) maxRhombus--;
   const rhombusSums: Set<number> = new Set();
   for (let rhombusSize = 1; rhombusSize <= maxRhombus; rhombusSize += 2) {
     for (let row = 0; row <= grid.length - rhombusSize; row++) {
-      const endRow = row + rhombusSize - 1;
       const halfSize = Math.floor(rhombusSize / 2);
       for (let col = halfSize; col < grid[0].length - halfSize; col++) {
-        let sum = 0;
-
-        // top half of rhombus
-        for (let i = row; i <= row + halfSize; i++) {
-          const iBase = i - row;
-          const startCol = col - iBase;
-          for (
-            let j = startCol;
-            j <= startCol + iBase * 2;
-            j += Math.max(1, iBase * 2)
-          ) {
-            sum += grid[i][j];
-          }
-        }
-
-        // bottom half of rhombus
-        for (let i = endRow; i > row + halfSize; i--) {
-          const iBase = endRow - i;
-          const startCol = col - iBase;
-          for (
-            let j = startCol;
-            j <= startCol + iBase * 2;
-            j += Math.max(1, iBase * 2)
-          ) {
-            sum += grid[i][j];
-          }
-        }
-        rhombusSums.add(sum);
+        rhombusSums.add(getRhombusSum(grid, rhombusSize, row, col));
       }
     }
   }

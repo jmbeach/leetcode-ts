@@ -19,5 +19,8 @@
   "homepage": "https://github.com/jmbeach/leetcode-ts#readme",
   "dependencies": {
     "prettier": "^2.7.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
   }
 }
