@@ -68,28 +68,6 @@ for (const dataset of datasetSizes) {
   const evenNonPalindrome = makeNonPalindrome(dataset, false);
   const oddPalindrome = makePalindrome(dataset, true);
   const evenPalindrome = makePalindrome(dataset, false);
-  const toWrite = [
-    {
-      data: oddNonPalindrome,
-      // in case there's a bug with my make palindrome code
-      expected: isPalindrome(oddNonPalindrome),
-    },
-    {
-      data: evenNonPalindrome,
-      // in case there's a bug with my make palindrome code
-      expected: isPalindrome(evenNonPalindrome),
-    },
-    {
-      data: oddPalindrome,
-      // in case there's a bug with my make palindrome code
-      expected: isPalindrome(oddPalindrome),
-    },
-    {
-      data: evenPalindrome,
-      // in case there's a bug with my make palindrome code
-      expected: isPalindrome(evenPalindrome),
-    },
-  ];
   const inFileNameOddNon = `input${dataset}43.txt`;
   const inFileNameEvenNon = `input${dataset}33.txt`;
   const inFileNameOdd = `input${dataset}4.txt`;
