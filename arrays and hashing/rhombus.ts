@@ -1,53 +1,50 @@
-function getRhombusSum(
+function getSum(
   grid: number[][],
-  rhombusSize: number,
-  row: number,
-  col: number
-): number {
+  startRow: number,
+  startCol: number,
+  size: number
+) {
   let sum = 0;
-  const halfSize = Math.floor(rhombusSize / 2);
-  // top half of rhombus
-  for (let i = row; i <= row + halfSize; i++) {
-    const iBase = i - row;
-    const startCol = col - iBase;
-    for (
-      let j = startCol;
-      j <= startCol + iBase * 2;
-      j += Math.max(1, iBase * 2)
-    ) {
-      sum += grid[i][j];
-    }
+  let [row, col] = [startRow, startCol];
+  if (size === 0) return grid[startRow][startCol];
+  while (row > startRow - size && col < startCol + size) {
+    sum += grid[row][col];
+    row--;
+    col++;
   }
-
-  // bottom half of rhombus
-  const endRow = row + rhombusSize - 1;
-  for (let i = endRow; i > row + halfSize; i--) {
-    const iBase = endRow - i;
-    const startCol = col - iBase;
-    for (
-      let j = startCol;
-      j <= startCol + iBase * 2;
-      j += Math.max(1, iBase * 2)
-    ) {
-      sum += grid[i][j];
-    }
+  while (row < startRow && col < startCol + size * 2) {
+    sum += grid[row][col];
+    row++;
+    col++;
   }
-
+  while (row < startRow + size && col > startCol + size) {
+    sum += grid[row][col];
+    row++;
+    col--;
+  }
+  while (row > startRow && col > startCol) {
+    sum += grid[row][col];
+    row--;
+    col--;
+  }
   return sum;
 }
 function getBiggestThree(grid: number[][]): number[] {
-  let maxRhombus = Math.min(grid.length, grid[0].length);
-  if (maxRhombus % 2 === 0) maxRhombus--;
-  const rhombusSums: Set<number> = new Set();
-  for (let rhombusSize = 1; rhombusSize <= maxRhombus; rhombusSize += 2) {
-    for (let row = 0; row <= grid.length - rhombusSize; row++) {
-      const halfSize = Math.floor(rhombusSize / 2);
-      for (let col = halfSize; col < grid[0].length - halfSize; col++) {
-        rhombusSums.add(getRhombusSum(grid, rhombusSize, row, col));
+  const sums: Set<number> = new Set();
+  const [m, n] = [grid.length, grid[0].length];
+  let maxLength = Math.min(m, n);
+  if (maxLength % 2 == 0) maxLength--;
+  const maxSize = Math.floor(maxLength / 2);
+  for (let rhombusSize = 0; rhombusSize <= maxSize; rhombusSize++) {
+    for (let row = rhombusSize; row < m - rhombusSize; row++) {
+      for (let col = 0; col + 2 * rhombusSize < n; col++) {
+        sums.add(getSum(grid, row, col, rhombusSize));
       }
     }
   }
-  return [...rhombusSums].sort((a, b) => b - a).slice(0, 3);
+  const array = [...sums];
+  array.sort((a, b) => b - a);
+  return array.slice(0, 3);
 }
 
 const tests = [
@@ -70,6 +67,10 @@ const tests = [
       [4, 19, 5, 2, 19, 17, 7, 2, 2],
     ],
     expect: [107, 103, 102],
+  },
+  {
+    data: [[7, 7, 7]],
+    expect: [7],
   },
 ];
 
