@@ -8,34 +8,33 @@ class ListNode {
 }
 
 function reverseKGroup(head: ListNode | null, k: number): ListNode | null {
-  const dummy: ListNode = { val: 0, next: head };
-  let groupPrev = dummy;
+  const dummy = new ListNode(0, head);
+  let prevGroup = dummy;
   while (true) {
-    const kth = getKthElement(groupPrev, k);
+    const kth = getKth(prevGroup, k);
     if (!kth) break;
-    const groupNext = kth.next;
-    let prev = kth.next;
-    let current = groupPrev.next;
-    while (current && current !== groupNext) {
-      const temp = current.next;
-      current.next = prev;
-      prev = current;
-      current = temp;
+    const nextGroup = kth.next;
+    let [prev, curr] = [nextGroup, prevGroup.next];
+    while (curr !== nextGroup) {
+      const next = curr.next;
+      curr.next = prev;
+      prev = curr;
+      curr = next;
     }
-
-    const temp = groupPrev.next;
-    groupPrev.next = kth;
-    groupPrev = temp!;
+    const newGroupEnd = prevGroup.next;
+    prevGroup.next = kth;
+    prevGroup = newGroupEnd;
   }
   return dummy.next;
 }
 
-function getKthElement(node: ListNode, k: number): ListNode | null {
-  let next: ListNode | null = node;
-  for (let i = 0; i < k && next; i++) {
-    next = next.next;
+function getKth(node: ListNode, k: number) {
+  let result = node;
+  for (let i = 0; i < k; i++) {
+    result = result.next;
+    if (!result) return null;
   }
-  return next;
+  return result;
 }
 
 const tests = [
@@ -43,6 +42,11 @@ const tests = [
     data: [1, 2, 3, 4, 5],
     size: 2,
     expect: [2, 1, 4, 3, 5],
+  },
+  {
+    data: [1, 2, 3, 4, 5],
+    size: 3,
+    expect: [3, 2, 1, 4, 5],
   },
 ];
 

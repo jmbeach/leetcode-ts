@@ -1,50 +1,52 @@
+function getBiggestThree(grid: number[][]): number[] {
+  const [m, n] = [grid.length, grid[0].length];
+  let maxSize = Math.min(m, n);
+  if (maxSize % 2 === 0) maxSize--;
+  const maxArea = (maxSize - 1) / 2;
+  const sums = new Set();
+  for (let area = 0; area <= maxArea; area++) {
+    for (let row = area; row < m - area; row++) {
+      for (let col = 0; col < n - area * 2; col++) {
+        console.log(area, row, col);
+        sums.add(getSum(grid, row, col, area));
+      }
+    }
+  }
+  const arr = [...sums];
+  arr.sort((a, b) => b - a);
+  return arr.slice(0, 3);
+}
+
 function getSum(
   grid: number[][],
   startRow: number,
   startCol: number,
-  size: number
-) {
-  let sum = 0;
+  area: number
+): number {
   let [row, col] = [startRow, startCol];
-  if (size === 0) return grid[startRow][startCol];
-  while (row > startRow - size && col < startCol + size) {
+  let sum = 0;
+  if (area === 0) return grid[row][col];
+  while (row > startRow - area) {
     sum += grid[row][col];
-    row--;
     col++;
-  }
-  while (row < startRow && col < startCol + size * 2) {
-    sum += grid[row][col];
-    row++;
-    col++;
-  }
-  while (row < startRow + size && col > startCol + size) {
-    sum += grid[row][col];
-    row++;
-    col--;
-  }
-  while (row > startRow && col > startCol) {
-    sum += grid[row][col];
     row--;
+  }
+  while (row < startRow) {
+    sum += grid[row][col];
+    col++;
+    row++;
+  }
+  while (row < startRow + area) {
+    sum += grid[row][col];
     col--;
+    row++;
+  }
+  while (row > startRow) {
+    sum += grid[row][col];
+    col--;
+    row--;
   }
   return sum;
-}
-function getBiggestThree(grid: number[][]): number[] {
-  const sums: Set<number> = new Set();
-  const [m, n] = [grid.length, grid[0].length];
-  let maxLength = Math.min(m, n);
-  if (maxLength % 2 == 0) maxLength--;
-  const maxSize = Math.floor(maxLength / 2);
-  for (let rhombusSize = 0; rhombusSize <= maxSize; rhombusSize++) {
-    for (let row = rhombusSize; row < m - rhombusSize; row++) {
-      for (let col = 0; col + 2 * rhombusSize < n; col++) {
-        sums.add(getSum(grid, row, col, rhombusSize));
-      }
-    }
-  }
-  const array = [...sums];
-  array.sort((a, b) => b - a);
-  return array.slice(0, 3);
 }
 
 const tests = [
