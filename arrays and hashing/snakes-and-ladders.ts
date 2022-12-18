@@ -1,34 +1,34 @@
-function numberToRowCol(number: number, boardSize: number): [number, number] {
-  const row = boardSize - Math.ceil(number / boardSize);
-  if (number >= boardSize * boardSize) return [0, 0];
-  if (row % 2 === 0) {
-    const col =
-      (Math.ceil(number / boardSize) * boardSize - number) % boardSize;
-    return [row, col];
-  } else {
-    return [row, (number - 1) % boardSize];
-  }
+function getCellAtPosition(n: number, position: number): [number, number] {
+  if (position >= n * n) return [0, 0];
+  const rowsFromBottom = Math.ceil(position / n);
+  const row = n - rowsFromBottom;
+  const col =
+    rowsFromBottom % 2 === 0
+      ? rowsFromBottom * n - position
+      : (position - 1) % n;
+  return [row, col];
 }
 function snakesAndLadders(board: number[][]): number {
-  const boardSize = Math.pow(board.length, 2);
-  const visited: Set<number> = new Set();
-  const q: [number, number][] = [];
-  q.push([1, 0]);
-  while (q.length) {
-    const [space, moves] = q.splice(0, 1)[0];
-    for (let roll = 1; roll < 7; roll++) {
-      let next = space + roll;
-      const [row, col] = numberToRowCol(next, board.length);
-      if (board[row][col] !== -1) {
-        next = board[row][col];
+  const seen: Set<number> = new Set();
+  const n = board.length;
+  const moves = [[1, 0]];
+  seen.add(1);
+  while (moves.length) {
+    const [movePosition, moveDepth] = moves.shift()!;
+    for (let i = 1; i <= 6; i++) {
+      let next = movePosition + i;
+      const [row, col] = getCellAtPosition(n, next);
+      console.log(movePosition, moveDepth, next, row, col);
+      const val = board[row][col];
+      if (val !== -1) {
+        next = val;
       }
-      if (next >= boardSize) {
-        return moves + 1;
+      if (next >= n * n) {
+        return moveDepth + 1;
       }
-      if (!visited.has(next)) {
-        visited.add(next);
-        q.push([next, moves + 1]);
-      }
+      if (seen.has(next)) continue;
+      seen.add(next);
+      moves.push([next, moveDepth + 1]);
     }
   }
   return -1;
