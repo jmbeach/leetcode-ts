@@ -1,4 +1,30 @@
-function getCellAtPosition(n: number, position: number): [number, number] {
+function snakesAndLadders(board: number[][]): number {
+  const n = board.length;
+  const moves = [[1, 0]];
+  const seen: Set<number> = new Set();
+  seen.add(1);
+  while (moves.length) {
+    const [position, depth] = moves.shift()!;
+    for (let roll = 1; roll <= 6; roll++) {
+      let next = position + roll;
+      const [row, col] = cellAtPosition(n, next);
+      const val = board[row][col];
+      if (val !== -1) {
+        next = val;
+      }
+      if (next >= n * n) {
+        return depth + 1;
+      }
+      if (!seen.has(next)) {
+        seen.add(next);
+        moves.push([next, depth + 1]);
+      }
+    }
+  }
+  return -1;
+}
+
+function cellAtPosition(n: number, position: number): [number, number] {
   if (position >= n * n) return [0, 0];
   const rowsFromBottom = Math.ceil(position / n);
   const row = n - rowsFromBottom;
@@ -7,31 +33,6 @@ function getCellAtPosition(n: number, position: number): [number, number] {
       ? rowsFromBottom * n - position
       : (position - 1) % n;
   return [row, col];
-}
-function snakesAndLadders(board: number[][]): number {
-  const seen: Set<number> = new Set();
-  const n = board.length;
-  const moves = [[1, 0]];
-  seen.add(1);
-  while (moves.length) {
-    const [movePosition, moveDepth] = moves.shift()!;
-    for (let i = 1; i <= 6; i++) {
-      let next = movePosition + i;
-      const [row, col] = getCellAtPosition(n, next);
-      console.log(movePosition, moveDepth, next, row, col);
-      const val = board[row][col];
-      if (val !== -1) {
-        next = val;
-      }
-      if (next >= n * n) {
-        return moveDepth + 1;
-      }
-      if (seen.has(next)) continue;
-      seen.add(next);
-      moves.push([next, moveDepth + 1]);
-    }
-  }
-  return -1;
 }
 
 const tests = [
